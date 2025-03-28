@@ -1989,6 +1989,11 @@ func (c *Client) WritePacketRTPWithNTP(medi *description.Media, pkt *rtp.Packet,
 	cm := c.setuppedMedias[medi]
 	cf := cm.formats[pkt.PayloadType]
 
+	// fix unknow PayloadType
+	if cf == nil {
+		return nil
+	}
+
 	cf.rtcpSender.ProcessPacketRTP(pkt, ntp, cf.format.PTSEqualsDTS(pkt))
 
 	ok := c.writer.push(func() error {
